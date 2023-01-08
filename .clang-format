@@ -1,0 +1,30 @@
+BasedOnStyle: LLVM
+
+IndentWidth: 4
+
+AlignAfterOpenBracket: Align
+AlignEscapedNewlines: Left
+
+AllowShortBlocksOnASingleLine: Always
+AllowShortCaseLabelsOnASingleLine: true
+AllowShortFunctionsOnASingleLine: All
+AllowShortIfStatementsOnASingleLine: AllIfsAndElse
+
+BreakBeforeBraces: Custom
+BraceWrapping:
+  IndentBraces: false
+  AfterStruct: false
+  AfterCaseLabel: false
+  AfterControlStatement: Always
+  AfterEnum: false
+  AfterFunction: false
+  BeforeElse: false
+  SplitEmptyFunction: false
+
+IndentPPDirectives: BeforeHash
+
+KeepEmptyLinesAtTheStartOfBlocks: false
+
+PointerAlignment: Right
+
+ColumnLimit: 100
