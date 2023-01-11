@@ -5,6 +5,7 @@
 #ifndef DS_H
 #define DS_H
 
+#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -42,7 +43,7 @@ typedef struct {
 /******************************************************************************/
 /*                           FUNCTIONS DECLARATIONS                           */
 /******************************************************************************/
-DS_DEF const DynamicString NULL_STR = DynamicString{0};
+DS_DEF const DynamicString NULL_STR = {0};
 
 DS_DEF DynamicString *DS_create_from_string_parts(const char *string, size_t size);
 DS_DEF DynamicString *DS_create_from_string(const char *string);
