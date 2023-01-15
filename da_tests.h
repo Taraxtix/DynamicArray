@@ -3,8 +3,9 @@
  * @author : Taraxtix (Brauer Antonin)
  */
 
-#define DS_IMPLEMENTATION
-#include "da.h"
+#ifndef DA_TESTS_H
+#define DA_TESTS_H
+
 #include <stdbool.h>
 
 #define DEFER_RETURN(ret)  \
@@ -33,3 +34,5 @@ bool test_chop_last();
 bool test_chop_right();
 bool test_chop_left();
 bool test_chop_by_delim();
+
+#endif // DA_TESTS_H

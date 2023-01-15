@@ -1,5 +1,7 @@
 #include "da_tests.h"
-
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
 #define USAGE(filename)                                       \
     do                                                        \
@@ -10,7 +12,7 @@
 
 typedef struct {
     char *name;
-    int (*func)(void);
+    bool (*func)(void);
 } Test;
 
 Test tests[] = {
@@ -38,6 +40,22 @@ Test tests[] = {
 
 int main(int argc, char **argv) {
     if (argc < 2) USAGE(argv[0]);
+    int ret = -1;
 
-    return 0;
+    for (const Test *test = tests; test->name && test->func; test++)
+    {
+        if (!strcmp(argv[1], test->name))
+        {
+            ret = (int)test->func();
+            break;
+        }
+    }
+
+    switch (ret)
+    {
+    case -1: printf("test \"%s\" not found\n", argv[1]); return EXIT_FAILURE;
+    case 0: printf("test \"%s\" finished : FAILURE\n", argv[1]); return EXIT_FAILURE;
+    case 1: printf("test \"%s\" finished : SUCCESS\n", argv[1]); return EXIT_SUCCESS;
+    default: return EXIT_FAILURE;
+    }
 }

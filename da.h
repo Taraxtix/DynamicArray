@@ -39,7 +39,7 @@ typedef struct {
     char *data;
 } DynamicString;
 
-#define DS(str) DS_create_from_string((str))
+#define DS(str) DS_create_from_string(str)
 #define DS_NULL DS(NULL)
 
 #define DS_Fmt "%.*s"
@@ -79,27 +79,23 @@ DS_DEF DynamicString *DS_chop_by_delim(DynamicString *ds, char delim);
 /******************************************************************************/
 
 DS_DEF DynamicString *DS_create_from_string_parts(const char *str, size_t size) {
-    size = MIN(size, sizeof(str) - 1);
     DynamicString *ds = (DynamicString *)malloc(sizeof(DynamicString));
     ASSERT(ds, "Cannot allocate memory for DynamicString");
-
-    if (str) ds->size = size;
-    else ds->size = 0;
-
+    ds->size = str ? MIN(size, strlen(str)) : 0;
     ds->capacity = 128;
-    while (ds->capacity < size)
+    while (ds->capacity < ds->size)
     {
         if (ds->capacity == 0) ds->capacity = 128;
         else ds->capacity *= 2;
     }
     ds->data = (char *)malloc(ds->capacity);
     ASSERT(ds->data, "Cannot allocate memory for data in the DynamicString");
-    if (str) memcpy(ds->data, str, size);
+    if (str) memcpy(ds->data, str, ds->size);
     return ds;
 }
 
 DS_DEF DynamicString *DS_create_from_string(const char *string) {
-    return DS_create_from_string_parts(string, sizeof(string) - 1);
+    return DS_create_from_string_parts(string, strlen(string));
 }
 
 DS_DEF void DS_destroy(DynamicString *ds) {
@@ -142,15 +138,15 @@ DS_DEF void DS_append_char(DynamicString *ds, const char c) {
 
 DS_DEF void DS_append_str(DynamicString *ds, const char *str, size_t size) {
     ASSERT(ds, "Cannot append to a null DynamicString");
-    size = str ? MIN(size, sizeof(str) - 1) : 0;
-    while (ds->size + sizeof(str) > ds->capacity)
+    size = str ? MIN(size, strlen(str)) : 0;
+    while (ds->size + strlen(str) > ds->capacity)
     {
         ds->capacity *= 2;
         ds->data = (char *)realloc(ds->data, ds->capacity);
         ASSERT(ds->data, "Cannot allocate memory for data in the DynamicString");
     }
     memcpy(ds->data + ds->size, str, size);
-    ds->size += sizeof(str) - 1;
+    ds->size += strlen(str);
 }
 
 DS_DEF char DS_get_char_at(const DynamicString *ds, size_t index) {
@@ -177,7 +173,7 @@ DS_DEF void DS_insert_str_at(DynamicString *ds, const char *str, size_t size, si
     ASSERT(ds, "Cannot insert into a NULL DynamicString");
     ASSERT(index < size, "Index out of range");
     if (!str) return;
-    size = MIN(size, sizeof(str) - 1);
+    size = MIN(size, strlen(str));
     memmove(ds->data + index + size + 1, ds->data + index, ds->size - index);
     memcpy(ds->data + index, str, size);
     ds->size += size;

@@ -3,12 +3,15 @@
  * @author : Taraxtix (Brauer Antonin)
  */
 
+#define DS_IMPLEMENTATION
 #include "da_tests.h"
+#include "da.h"
 
 bool test_create() {
     bool ret_value = true;
 
     const char *str = "abcdefghijklmnop";
+    // TODO :FIGURE OUT WHY STRLEN SEGFAULT
     DynamicString *ds1 = DS(str);
     DynamicString *ds2 = DS_create_from_string_parts(str, 8);
     DynamicString *ds3 = DS("");
@@ -174,7 +177,7 @@ bool test_chop_first() {
 
     DynamicString *ds1 = DS("0123Hello World!456789");
     DynamicString *ds2 = DS_chop_first(ds1);
-    DEFER_RETURN(DS_equal(ds1, DS("123Hello World!456789")) && DS_equals(ds2, DS("0")));
+    DEFER_RETURN(DS_equal(ds1, DS("123Hello World!456789")) && DS_equal(ds2, DS("0")));
 
 defer:
     DS_destroy(ds1);
@@ -187,7 +190,7 @@ bool test_chop_last() {
 
     DynamicString *ds1 = DS("0123Hello World!456789");
     DynamicString *ds2 = DS_chop_last(ds1);
-    DEFER_RETURN(DS_equal(ds1, DS("0123Hello World!45678")) && DS_equals(ds2, DS("9")));
+    DEFER_RETURN(DS_equal(ds1, DS("0123Hello World!45678")) && DS_equal(ds2, DS("9")));
 
 defer:
     DS_destroy(ds1);
@@ -200,7 +203,7 @@ bool test_chop_right() {
 
     DynamicString *ds1 = DS("0123Hello World!456789");
     DynamicString *ds2 = DS_chop_right(ds1, 4);
-    DEFER_RETURN(DS_equal(ds1, DS("Hello World!456789")) && DS_equals(ds2, DS("0123")));
+    DEFER_RETURN(DS_equal(ds1, DS("Hello World!456789")) && DS_equal(ds2, DS("0123")));
 
 defer:
     DS_destroy(ds1);
@@ -214,7 +217,7 @@ bool test_chop_left() {
     DynamicString *ds1 = DS("0123Hello World!456789");
     DynamicString *ds2 = DS_chop_left(ds1, 4);
     DEFER_RETURN(ds1->size == 11 && DS_equal(ds2, DS("Hello World!456789")) &&
-                 DS_equals(ds1, DS("0123")));
+                 DS_equal(ds1, DS("0123")));
 
 defer:
     DS_destroy(ds1);
@@ -228,12 +231,10 @@ bool test_chop_by_delim() {
     DynamicString *ds1 = DS("0123Hello World!456789");
     DynamicString *ds2 = DS_chop_by_delim(ds1, '3');
     DEFER_RETURN(ds1->size == 11 && DS_equal(ds1, DS("Hello World!456789")) &&
-                 DS_equals(ds2, DS("0123")));
+                 DS_equal(ds2, DS("0123")));
 
 defer:
     DS_destroy(ds1);
     DS_destroy(ds2);
     return ret_value;
 }
-
-int main() { return 0; }
