@@ -16,14 +16,14 @@
     #define DS_DEF
 #endif // DS_DEF
 
-#define ASSERT(cond, msg)                                           \
-    do                                                              \
-    {                                                               \
-        if (!cond)                                                  \
-        {                                                           \
-            fprintf(stderr, "[ERROR] Assertion failed: %s\n", msg); \
-            exit(1);                                                \
-        }                                                           \
+#define ASSERT(cond, msg)                                             \
+    do                                                                \
+    {                                                                 \
+        if (!(cond))                                                  \
+        {                                                             \
+            fprintf(stderr, "[ERROR] Assertion failed: %s\n", (msg)); \
+            exit(1);                                                  \
+        }                                                             \
     } while (0)
 
 #define MIN(a, b)               \
@@ -57,11 +57,11 @@ DS_DEF void DS_clear(DynamicString *ds);
 DS_DEF bool DS_equal(const DynamicString *ds1, const DynamicString *ds2);
 DS_DEF bool DS_is_first(const DynamicString *ds, char c);
 DS_DEF void DS_append_char(DynamicString *ds, char c);
-DS_DEF void DS_append_str(DynamicString *ds, const char *str);
+DS_DEF void DS_append_str(DynamicString *ds, const char *str, size_t size);
 DS_DEF char DS_get_char_at(const DynamicString *ds, size_t index);
 DS_DEF void DS_set_char_at(DynamicString *ds, size_t index, char c);
 DS_DEF void DS_insert_char_at(DynamicString *ds, char c, size_t index);
-DS_DEF void DS_insert_str_at(DynamicString *ds, const char *str, size_t index);
+DS_DEF void DS_insert_str_at(DynamicString *ds, const char *str, size_t size, size_t index);
 DS_DEF void DS_remove_char_at(DynamicString *ds, size_t index);
 DS_DEF void DS_remove_str_at(DynamicString *ds, size_t from, size_t to);
 DS_DEF DynamicString *DS_substring(const DynamicString *ds, size_t start, size_t end);
@@ -72,9 +72,6 @@ DS_DEF DynamicString *DS_chop_left(DynamicString *ds, size_t index);
 DS_DEF DynamicString *DS_chop_by_delim(DynamicString *ds, char delim);
 
 #endif // DS_H
-// TEMPORARY
-#define DS_IMPLEMENTATION
-// END OF TEMPORARY
 #ifdef DS_IMPLEMENTATION
 
 /******************************************************************************/
@@ -84,8 +81,11 @@ DS_DEF DynamicString *DS_chop_by_delim(DynamicString *ds, char delim);
 DS_DEF DynamicString *DS_create_from_string_parts(const char *str, size_t size) {
     size = MIN(size, sizeof(str) - 1);
     DynamicString *ds = (DynamicString *)malloc(sizeof(DynamicString));
-    ASSERT(ds, 'Cannot allocate memory for DynamicString');
-    ds->size = size;
+    ASSERT(ds, "Cannot allocate memory for DynamicString");
+
+    if (str) ds->size = size;
+    else ds->size = 0;
+
     ds->capacity = 128;
     while (ds->capacity < size)
     {
@@ -93,7 +93,7 @@ DS_DEF DynamicString *DS_create_from_string_parts(const char *str, size_t size) 
         else ds->capacity *= 2;
     }
     ds->data = (char *)malloc(ds->capacity);
-    ASSERT(ds->data, 'Cannot allocate memory for data in the DynamicString');
+    ASSERT(ds->data, "Cannot allocate memory for data in the DynamicString");
     if (str) memcpy(ds->data, str, size);
     return ds;
 }
@@ -113,7 +113,7 @@ DS_DEF void DS_clear(DynamicString *ds) {
     ds->size = 0;
 }
 
-DS_DEF bool DS_equal(DynamicString *ds1, DynamicString *ds2) {
+DS_DEF bool DS_equal(const DynamicString *ds1, const DynamicString *ds2) {
     ASSERT(!ds1 || !ds2, "Cannot compare a NULL DynamicString");
     if (ds1->size != ds2->size) return false;
     for (size_t i = 0; i < ds1->size; i++)
@@ -135,7 +135,7 @@ DS_DEF void DS_append_char(DynamicString *ds, const char c) {
     {
         ds->capacity *= 2;
         ds->data = (char *)realloc(ds->data, ds->capacity);
-        ASSERT(ds->data, 'Cannot allocate enough memory for data in the DynamicString');
+        ASSERT(ds->data, "Cannot allocate enough memory for data in the DynamicString");
     }
     ds->data[ds->size++] = c;
 }
@@ -147,7 +147,7 @@ DS_DEF void DS_append_str(DynamicString *ds, const char *str, size_t size) {
     {
         ds->capacity *= 2;
         ds->data = (char *)realloc(ds->data, ds->capacity);
-        ASSERT(ds->data, 'Cannot allocate memory for data in the DynamicString');
+        ASSERT(ds->data, "Cannot allocate memory for data in the DynamicString");
     }
     memcpy(ds->data + ds->size, str, size);
     ds->size += sizeof(str) - 1;
