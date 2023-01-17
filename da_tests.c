@@ -215,9 +215,8 @@ bool test_chop_left() {
     bool ret_value = true;
 
     DynamicString *ds1 = DS("0123Hello World!456789");
-    DynamicString *ds2 = DS_chop_left(ds1, 4);
-    DEFER_RETURN(ds1->size == 11 && DS_equal(ds2, DS("Hello World!456789")) &&
-                 DS_equal(ds1, DS("0123")));
+    DynamicString *ds2 = DS_chop_left(ds1, 3);
+    DEFER_RETURN(DS_equal(ds1, DS("Hello World!456789")) && DS_equal(ds2, DS("0123")));
 
 defer:
     DS_destroy(ds1);
@@ -230,8 +229,7 @@ bool test_chop_by_delim() {
 
     DynamicString *ds1 = DS("0123Hello World!456789");
     DynamicString *ds2 = DS_chop_by_delim(ds1, '3');
-    DEFER_RETURN(ds1->size == 11 && DS_equal(ds1, DS("Hello World!456789")) &&
-                 DS_equal(ds2, DS("0123")));
+    DEFER_RETURN(DS_equal(ds1, DS("Hello World!456789")) && DS_equal(ds2, DS("0123")));
 
 defer:
     DS_destroy(ds1);

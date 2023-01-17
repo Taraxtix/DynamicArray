@@ -223,16 +223,14 @@ DS_DEF DynamicString *DS_chop_right(DynamicString *ds, size_t index) {
     ASSERT(index < ds->size, "index out of range");
     DynamicString *ret = DS_substring(ds, index, ds->size - 1);
     DS_remove_str_at(ds, index, ds->size - 1);
-    ds->size -= (ds->size - index);
     return ret;
 }
 
 DS_DEF DynamicString *DS_chop_left(DynamicString *ds, size_t index) {
     ASSERT(ds, "Cannot chop a NULL DynamicString");
     ASSERT(index < ds->size, "index out of range");
-    DynamicString *ret = DS_create_from_string_parts(ds->data, index);
-    memmove(ds->data, ds->data + index, ds->size - index);
-    ds->size -= index;
+    DynamicString *ret = DS_substring(ds, 0, index);
+    DS_remove_str_at(ds, 0, index);
     return ret;
 }
 
