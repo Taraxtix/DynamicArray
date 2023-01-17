@@ -19,7 +19,7 @@ bool test_create() {
     if (ds1->size != 16 || ds2->size != 8 || ds3->size != 0 || ds4->size != 0) DEFER_RETURN(false);
     for (int i = 0; i < ds1->size; i++)
     {
-        if (ds2->data[i] != str[i]) DEFER_RETURN(false);
+        if (ds1->data[i] != str[i]) DEFER_RETURN(false);
         if (i < ds2->size && ds2->data[i] != str[i]) DEFER_RETURN(false);
     }
 
@@ -164,7 +164,7 @@ bool test_substring() {
 
     DynamicString *ds1 = DS("0123Hello World!456789");
     DynamicString *ds2 = DS_substring(ds1, 4, 15);
-    DEFER_RETURN(DS_equal(ds2, DS("Hello World!")) && DS_equal(ds1, DS("0123Hello World !456789")));
+    DEFER_RETURN(DS_equal(ds2, DS("Hello World!")) && DS_equal(ds1, DS("0123Hello World!456789")));
 
 defer:
     DS_destroy(ds1);
@@ -203,7 +203,7 @@ bool test_chop_right() {
 
     DynamicString *ds1 = DS("0123Hello World!456789");
     DynamicString *ds2 = DS_chop_right(ds1, 4);
-    DEFER_RETURN(DS_equal(ds1, DS("Hello World!456789")) && DS_equal(ds2, DS("0123")));
+    DEFER_RETURN(DS_equal(ds2, DS("Hello World!456789")) && DS_equal(ds1, DS("0123")));
 
 defer:
     DS_destroy(ds1);

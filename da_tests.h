@@ -15,7 +15,7 @@
         goto defer;        \
     } while (0)
 
-#define INT_TO_CHAR(i) (i + 'a')
+#define INT_TO_CHAR(i) (i + '0')
 
 bool test_create();
 bool test_destroy();

@@ -95,7 +95,8 @@ DS_DEF DynamicString *DS_create_from_string_parts(const char *str, size_t size) 
 }
 
 DS_DEF DynamicString *DS_create_from_string(const char *string) {
-    return DS_create_from_string_parts(string, strlen(string));
+    size_t size = string ? strlen(string) : 0;
+    return DS_create_from_string_parts(string, size);
 }
 
 DS_DEF void DS_destroy(DynamicString *ds) {
@@ -110,7 +111,7 @@ DS_DEF void DS_clear(DynamicString *ds) {
 }
 
 DS_DEF bool DS_equal(const DynamicString *ds1, const DynamicString *ds2) {
-    ASSERT(!ds1 || !ds2, "Cannot compare a NULL DynamicString");
+    ASSERT(ds1 && ds2, "Cannot compare a NULL DynamicString");
     if (ds1->size != ds2->size) return false;
     for (size_t i = 0; i < ds1->size; i++)
     {
@@ -191,13 +192,13 @@ DS_DEF void DS_remove_str_at(DynamicString *ds, size_t from, size_t to) {
     ASSERT(ds, "Cannot access a NULL DynamicString");
     ASSERT(from < to && to < ds->size, "Index out of range");
     memmove(ds->data + from, ds->data + to + 1, ds->size - to - 1);
-    ds->size -= (to - from);
+    ds->size -= (to + 1) - from;
 }
 
 DS_DEF DynamicString *DS_substring(const DynamicString *ds, size_t start, size_t end) {
     ASSERT(ds, "Cannot access a NULL DynamicString");
     ASSERT(start <= end && end < ds->size, "Invalid index range");
-    return DS_create_from_string_parts(ds->data + start, end - start);
+    return DS_create_from_string_parts(ds->data + start, (end + 1) - start);
 }
 
 DS_DEF DynamicString *DS_chop_first(DynamicString *ds) {
@@ -220,7 +221,8 @@ DS_DEF DynamicString *DS_chop_last(DynamicString *ds) {
 DS_DEF DynamicString *DS_chop_right(DynamicString *ds, size_t index) {
     ASSERT(ds, "Cannot chop a NULL DynamicString");
     ASSERT(index < ds->size, "index out of range");
-    DynamicString *ret = DS_create_from_string_parts(ds->data + index + 1, ds->size - index);
+    DynamicString *ret = DS_substring(ds, index, ds->size - 1);
+    DS_remove_str_at(ds, index, ds->size - 1);
     ds->size -= (ds->size - index);
     return ret;
 }
