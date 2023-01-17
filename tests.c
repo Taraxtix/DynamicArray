@@ -3,11 +3,11 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define USAGE(filename)                                       \
-    do                                                        \
-    {                                                         \
-        fprintf(stderr, "Usage: %s <test name>", (filename)); \
-        exit(1);                                              \
+#define USAGE(filename)                                         \
+    do                                                          \
+    {                                                           \
+        fprintf(stderr, "Usage: %s <test name>\n", (filename)); \
+        exit(1);                                                \
     } while (0)
 
 typedef struct {
