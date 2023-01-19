@@ -15,7 +15,7 @@ BraceWrapping:
   IndentBraces: false
   AfterStruct: false
   AfterCaseLabel: false
-  AfterControlStatement: Always
+  AfterControlStatement: Never
   AfterEnum: false
   AfterFunction: false
   BeforeElse: false
